@@ -228,6 +228,40 @@ class CustomRewardTrainer(RayPPOTrainer):
             f"prompts: {prompts[0]}\n\noutputs: {outputs[0]['response']}\n\nfinal_answer: {outputs[0]['final_answer']}\n\nis_correct: {outputs[0]['iscorrect']}\n\nstop_reason: {outputs[0]['stop_reason']}\n\nresponse_token: {len(output_tokens[0])}",
             self.global_step,
         )
+
+        repeat_penalty = 0.5  # Penalize repetition
+        reflection_bonus = 0.1  # Reward reflection patterns
+        length_bonus = 0.5  # Boost length within 8k-12k (adjustable)
+        
+        # Length scoring function
+        def compute_length_score_norm(response_token):
+            min_edge = 4096
+            low_target = 4096*2
+            high_target = 4096*3
+            max_edge = 16384
+            if response_token < min_edge:
+                return 0.0
+            elif min_edge <= response_token < low_target:
+                return (response_token - min_edge) / (low_target - min_edge)
+            elif low_target <= response_token <= high_target:
+                return 1.0
+            elif high_target < response_token <= max_edge:
+                return (max_edge - response_token) / (max_edge - high_target)
+            else:
+                return 0.0
+
+        def compute_reflection_score_norm(reflection_pattern_score):
+            max_rise = 10  # Peak at 10 reflections
+            max_allowed = 20  # Penalty beyond 20
+            if reflection_pattern_score < 0:  # Shouldn’t happen, but safeguard
+                return 0.0
+            elif reflection_pattern_score <= max_rise:
+                return reflection_pattern_score / max_rise  # Linear rise to 1
+            elif reflection_pattern_score <= max_allowed:
+                return 1.0  # Flat at 1
+            else:
+                return 0.0  # Penalty for >20
+
         for idx in range(len(outputs)):
             prompt, output, out_token = prompts[idx], outputs[idx], output_tokens[idx]
             rep_score, reflection_pattern_score = repeat_scores[idx], reflection_pattern_scores[idx]
@@ -242,6 +276,17 @@ class CustomRewardTrainer(RayPPOTrainer):
             else:
                 avg_non_stop_count += 1
                 score = 0.0
+            
+            # Normalize metrics
+            rep_score_norm = rep_score  # Already 0 to <1
+            reflection_score_norm = compute_reflection_score_norm(reflection_pattern_score)  # Cap at 20 patterns, scale to 0–1
+            length_score_norm = compute_length_score_norm(response_token)  # Cap deviation at 200, scale to 0–1
+
+            # Adjust score
+            score -= repeat_penalty * rep_score_norm
+            score += reflection_bonus * reflection_score_norm
+            score += length_bonus * length_score_norm
+
             scores.append(score)
 
             # calculate pass@n
