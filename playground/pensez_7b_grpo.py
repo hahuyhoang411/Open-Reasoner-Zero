@@ -3,7 +3,7 @@ Qwen2.5-7B base model + ppo
 
 debug running command in single node:
 
-DEBUG_MODE=True python -m playground.orz_7b_grpo
+DEBUG_MODE=True python -m playground.pensez_7b_grpo
 
 """
 
@@ -54,9 +54,9 @@ class PPOExpConfig(BasePPOExpConfig):
     pretrain: Optional[str] = "HoangHa/Pensez-v0.1-e5" # TODO: or put your downloaded model path here!
     reward_pretrain: Optional[str] = None
     save_interval: int = 50
-    ckpt_path: str = f"orz_ckpt/{file_name}"
-    save_path: str = f"orz_ckpt/{file_name}"
-    tensorboard_log_dir: str = f"orz_logs/{file_name}"
+    ckpt_path: str = f"pensez_ckpt/{file_name}"
+    save_path: str = f"pensez_ckpt/{file_name}"
+    tensorboard_log_dir: str = f"pensez_logs/{file_name}"
 
     # MathTrain dataset and Math500 eval dataset
     # data related settings
@@ -78,7 +78,7 @@ class PPOExpConfig(BasePPOExpConfig):
     actor_learning_rate: float = 1e-6
     critic_learning_rate: float = 5e-6
     num_warmup_steps: int = 50
-    prompt_max_len: int = 2048
+    prompt_max_len: int = 16384
     enable_prefix_caching: bool = True
     update_ref_every_epoch: bool = True
     advantage_normalize: bool = True
@@ -94,7 +94,7 @@ class PPOExpConfig(BasePPOExpConfig):
     micro_forward_batch_size: int = 1
     freezing_actor_steps: int = -1
     init_kl_coef: float = 0
-    # 更换KL loss + k3
+    # KL loss + k3
     kl_loss_coef: float = 0.0
     use_kl_loss: bool = True
     use_kl_estimator_k3: bool = True

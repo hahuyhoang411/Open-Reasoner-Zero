@@ -136,7 +136,7 @@ class BasePPOExp(BaseExp):
         )
 
     @cached_property
-    def tokenizer(self, padding_side="left"):
+    def tokenizer(self, padding_side="right"):
         tokenizer = AutoTokenizer.from_pretrained(
             self.cfg.pretrain, trust_remote_code=True, use_fast=not self.cfg.disable_fast_tokenizer
         )
