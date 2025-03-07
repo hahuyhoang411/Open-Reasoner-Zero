@@ -104,8 +104,8 @@ class PPOExpConfig(BasePPOExpConfig):
 
     # generate related settings
     packing_max_len: int = 16384
-    generate_max_len: int = 8000  # TODO: change to larger later
-    max_len: int = 8192  # TODO: change to larger later
+    generate_max_len: int = 16384  # TODO: change to larger later
+    max_len: int = 16384  # TODO: change to larger later
     temperature: float = 1.0
     top_p: float = 1.0
     top_k: int = -1
