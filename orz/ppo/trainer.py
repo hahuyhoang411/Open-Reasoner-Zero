@@ -738,8 +738,8 @@ class RayPPOTrainer:
         if self.cfg.colocate_all:
             async with Timer("Backload vllm engines to gpu"):
                 await self._backload_vllm_engines()
-            async with Timer("Broadcast actor weights to vllm engines"):
-                await self._sync_policy_weights_to_vllm()
+        async with Timer("Broadcast actor weights to vllm engines"):
+            await self._sync_policy_weights_to_vllm()
 
         if global_steps > self.cfg.freezing_actor_steps:
             return status[0]
