@@ -457,16 +457,34 @@ def create_vllm_engines(
 
 # check how many reflection pattern related words are in the responses
 def check_reflection_pattern(response: str) -> dict[str, int]:
-    # TODO: may need to add more pattern
-    reflection_pattern_words = [
-        r"wait,",
-        r"recheck[,\s]",
-        r"retry",
-        r"alternatively,",
-        r"however,",
+    # Define base reflection words without punctuation
+    reflection_base_words = [
+        "wait",
+        "recheck",
+        "retry",
+        "alternatively",
+        "however",
+        "verify",
+        "actually",
+        "let me think",
+        "let me verify"
     ]
+    
     res = defaultdict(int)
-    for word in reflection_pattern_words:
-        # can only be followed by a comma or a space
-        res[word] = len(re.findall(word, response))
+    
+    for base_word in reflection_base_words:
+        # Create case-insensitive regex pattern that handles various endings
+        pattern = fr'\b{re.escape(base_word)}\b[,.\s]*'
+        
+        # Find all occurrences case-insensitively
+        matches = re.findall(pattern, response, re.IGNORECASE)
+        
+        if matches:
+            # Store original matched text for better reporting
+            for match in matches:
+                # Strip any trailing whitespace for cleaner keys
+                clean_match = match.rstrip()
+                res[clean_match] += 1
+    
     return res
+
