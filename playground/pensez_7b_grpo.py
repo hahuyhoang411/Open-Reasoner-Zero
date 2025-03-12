@@ -76,7 +76,7 @@ class PPOExpConfig(BasePPOExpConfig):
     actor_learning_rate: float = 1e-6
     critic_learning_rate: float = 5e-6
     num_warmup_steps: int = 50
-    prompt_max_len: int = 16384
+    prompt_max_len: int = 2048
     enable_prefix_caching: bool = True
     update_ref_every_epoch: bool = True
     advantage_normalize: bool = True
@@ -102,7 +102,7 @@ class PPOExpConfig(BasePPOExpConfig):
 
     # generate related settings
     packing_max_len: int = 16384
-    generate_max_len: int = 16384  # TODO: change to larger later
+    generate_max_len: int = 14336  # TODO: change to larger later
     max_len: int = 16384  # TODO: change to larger later
     temperature: float = 1.0
     top_p: float = 1.0
