@@ -62,7 +62,7 @@ class PPOExpConfig(BasePPOExpConfig):
     # data related settings
     prompt_data: ListConfig = ListConfig(
         [
-            "data/orz_math_57k_collected.json",
+            "data/transformed_orz_math_57k.json",
         ]
     )
     eval_prompt_data: ListConfig = ListConfig(
