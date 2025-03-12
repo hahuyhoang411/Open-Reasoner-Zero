@@ -80,7 +80,7 @@ class CustomDataset(PromptDataset):
         assert len(dialogue) == 2, "dialogue must contain 2 items"
 
         # Extract the user's prompt
-        user_content = dialogue[0]["content"]
+        user_content = dialogue[0]["value"]
 
         # Create the message list for apply_chat_template
         messages = [
@@ -95,7 +95,7 @@ class CustomDataset(PromptDataset):
         )
 
         # Extract the ground truth answer
-        extra = {"answer": dialogue[1]["ground_truth"]["content"]}
+        extra = {"answer": dialogue[1]["ground_truth"]["value"]}
 
         return prompt, extra
     
@@ -112,7 +112,7 @@ class EvalCustomDataset(PromptDataset):
         assert "file_name" in dialogue, "dialogue must contain file_name"
 
         # Extract the user's prompt from the dialogue
-        user_content = dialogue["prompt"][0][0]["content"]
+        user_content = dialogue["prompt"][0]["value"]
 
         # Create the message list for apply_chat_template
         messages = [
