@@ -81,7 +81,7 @@ class PPOExpConfig(BasePPOExpConfig):
     update_ref_every_epoch: bool = True
     advantage_normalize: bool = True
 
-    num_episodes: int = 20
+    num_episodes: int = 3 if not DEBUG_MODE else 1
     rollout_batch_size: int = 128 if not DEBUG_MODE else 16
     n_samples_per_prompt: int = 64 if not DEBUG_MODE else 2
     micro_rollout_batch_size: int = 128
@@ -97,7 +97,7 @@ class PPOExpConfig(BasePPOExpConfig):
     use_kl_loss: bool = True
     use_kl_estimator_k3: bool = True
 
-    enable_eval: bool = True
+    enable_eval: bool = False
     eval_interval: int = 10
 
     # generate related settings
